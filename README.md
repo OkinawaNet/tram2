@@ -64,6 +64,7 @@ Tram.transition(:stop)
 # Выключение питания трамвая. Переход в конечное состояние. (только если нет пассажиров)
 Tram.transition(:power_off)
 
+# Текущее состояние
 Tram.get_state
 # %Tram{current: :ready, data: %{passengers: 0}}                                
 
