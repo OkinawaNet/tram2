@@ -63,4 +63,11 @@ defmodule TramTest do
     Tram.transition(:close_doors)
     assert Tram.get_state().current == :ready
   end
+
+  test "Не переходит в недопустимые состояния" do
+    Tram.transition(:power_on)
+    Tram.transition(:close_doors)
+    Tram.transition(:stop)
+    assert Tram.get_state().current == :ready
+  end
 end
