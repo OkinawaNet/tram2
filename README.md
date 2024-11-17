@@ -22,6 +22,10 @@
 6. **ready** → **final_state** через событие `power_off` (только если нет пассажиров)
 7. **ready** → **ready** через событие `power_off` (если есть пассажиры)
 
+### Схема
+
+[![Tram](./docs/fsm.png)](./docs/fsm.png)
+
 ## Установка
 
 Чтобы использовать модуль `Tram`, добавьте его в зависимости вашего проекта в файле `mix.exs`:
@@ -61,5 +65,5 @@ Tram.transition(:stop)
 Tram.transition(:power_off)
 
 Tram.get_state
-# :ready
+# %Tram{current: :ready, data: %{passengers: 0}}                                
 

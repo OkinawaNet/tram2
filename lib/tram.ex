@@ -38,7 +38,7 @@ defmodule Tram do
 
   use GenServer
 
-  defstruct state: :idle, data: %{passengers: 0}
+  defstruct current: :idle, data: %{passengers: 0}
 
   # Client
 
@@ -61,39 +61,39 @@ defmodule Tram do
   end
 
   def handle_call(:get_state, _, state) do
-    {:reply, state.state, state}
+    {:reply, state, state}
   end
 
   # Запуск, останов
 
-  def handle_call({:power_on, _}, _, %Tram{state: :idle, data: _} = state) do
-    {:reply, {:ok, :ready}, %Tram{state | state: :ready}}
+  def handle_call({:power_on, _}, _, %Tram{current: :idle, data: _} = state) do
+    {:reply, {:ok, :ready}, %Tram{state | current: :ready}}
   end
 
-  def handle_call({:power_off, _}, _, %Tram{state: :ready, data: %{passengers: 0}} = state) do
-    {:reply, {:ok, :final_state}, %Tram{state | state: :final_state}}
+  def handle_call({:power_off, _}, _, %Tram{current: :ready, data: %{passengers: 0}} = state) do
+    {:reply, {:ok, :final_state}, %Tram{state | current: :final_state}}
   end
 
   # Движение
 
-  def handle_call({:move, _}, _, %Tram{state: :ready, data: _} = state) do
-    {:reply, {:ok, :moving}, %Tram{state | state: :moving}}
+  def handle_call({:move, _}, _, %Tram{current: :ready, data: _} = state) do
+    {:reply, {:ok, :moving}, %Tram{state | current: :moving}}
   end
 
-  def handle_call({:stop, _}, _, %Tram{state: :moving, data: _} = state) do
-    {:reply, {:ok, :ready}, %Tram{state | state: :ready}}
+  def handle_call({:stop, _}, _, %Tram{current: :moving, data: _} = state) do
+    {:reply, {:ok, :ready}, %Tram{state | current: :ready}}
   end
 
   # Открытие и закрытие дверей
 
-  def handle_call({:open_doors, _}, _, %Tram{state: :ready, data: _} = state) do
-    {:reply, {:ok, :open}, %Tram{state | state: :open}}
+  def handle_call({:open_doors, _}, _, %Tram{current: :ready, data: _} = state) do
+    {:reply, {:ok, :open}, %Tram{state | current: :open}}
   end
 
   def handle_call(
         {:close_doors, event_payload},
         _,
-        %Tram{state: :open, data: data} = state
+        %Tram{current: :open, data: data} = state
       ) do
     passengers_entered = Map.get(event_payload, :passengers_entered, 0)
     passengers_exited = Map.get(event_payload, :passengers_exited, 0)
@@ -101,7 +101,7 @@ defmodule Tram do
     {:reply, {:ok, :ready},
      %Tram{
        state
-       | state: :ready,
+       | current: :ready,
          data: update_in(data.passengers, &(&1 + passengers_entered - passengers_exited))
      }}
   end

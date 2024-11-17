@@ -8,37 +8,37 @@ defmodule TramTest do
   end
 
   test "дефолт" do
-    assert Tram.get_state() == :idle
+    assert Tram.get_state().current == :idle
 
     Tram.transition(:power_on)
-    assert Tram.get_state() == :ready
+    assert Tram.get_state().current == :ready
 
     Tram.transition(:move)
-    assert Tram.get_state() == :moving
+    assert Tram.get_state().current == :moving
 
     Tram.transition(:stop)
-    assert Tram.get_state() == :ready
+    assert Tram.get_state().current == :ready
 
     Tram.transition(:open_doors)
-    assert Tram.get_state() == :open
+    assert Tram.get_state().current == :open
 
     Tram.transition(:close_doors, %{passengers_entered: 5})
-    assert Tram.get_state() == :ready
+    assert Tram.get_state() == %Tram{current: :ready, data: %{passengers: 5}}
 
     Tram.transition(:move)
-    assert Tram.get_state() == :moving
+    assert Tram.get_state().current == :moving
 
     Tram.transition(:stop)
-    assert Tram.get_state() == :ready
+    assert Tram.get_state().current == :ready
 
     Tram.transition(:open_doors)
-    assert Tram.get_state() == :open
+    assert Tram.get_state().current == :open
 
     Tram.transition(:close_doors, %{passengers_exited: 5})
-    assert Tram.get_state() == :ready
+    assert Tram.get_state() == %Tram{current: :ready, data: %{passengers: 0}}
 
     Tram.transition(:power_off)
-    assert Tram.get_state() == :final_state
+    assert Tram.get_state().current == :final_state
   end
 
   test "Забыл пассажиров. не может закончить работу" do
@@ -49,18 +49,18 @@ defmodule TramTest do
     Tram.transition(:close_doors, %{passengers_entered: 5})
 
     assert {:error, :invalid_transition} == Tram.transition(:power_off)
-    assert Tram.get_state() == :ready
+    assert Tram.get_state().current == :ready
   end
 
   test "некорректный переход не меняет состояние" do
     assert {:error, :invalid_transition} == Tram.transition(:lol)
-    assert Tram.get_state() == :idle
+    assert Tram.get_state().current == :idle
   end
 
   test "пустой" do
     Tram.transition(:power_on)
     Tram.transition(:open_doors)
     Tram.transition(:close_doors)
-    assert Tram.get_state() == :ready
+    assert Tram.get_state().current == :ready
   end
 end
