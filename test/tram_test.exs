@@ -8,6 +8,8 @@ defmodule TramTest do
   end
 
   test "дефолт" do
+    assert Tram.get_state() == :idle
+
     Tram.transition(:power_on)
     assert Tram.get_state() == :ready
 

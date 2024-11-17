@@ -56,6 +56,10 @@ defmodule Tram do
 
   # Server
 
+  def init(init_arg) do
+    {:ok, init_arg}
+  end
+
   def handle_call(:get_state, _, state) do
     {:reply, state.state, state}
   end
@@ -80,14 +84,14 @@ defmodule Tram do
     {:reply, {:ok, :ready}, %Tram{state | state: :ready}}
   end
 
-  # Погрузка и разгрузка пассажиров
+  # Открытие и закрытие дверей
 
   def handle_call({:open_doors, _}, _, %Tram{state: :ready, data: _} = state) do
     {:reply, {:ok, :open}, %Tram{state | state: :open}}
   end
 
   def handle_call(
-        {:close_doors, event_payload} \\ {:close_doors, %{}},
+        {:close_doors, event_payload},
         _,
         %Tram{state: :open, data: data} = state
       ) do
@@ -101,6 +105,8 @@ defmodule Tram do
          data: update_in(data.passengers, &(&1 + passengers_entered - passengers_exited))
      }}
   end
+
+  # остальное
 
   def handle_call(_, _, state) do
     {:reply, {:error, :invalid_transition}, state}
