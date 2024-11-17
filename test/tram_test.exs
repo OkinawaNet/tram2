@@ -52,11 +52,6 @@ defmodule TramTest do
     assert Tram.get_state().current == :ready
   end
 
-  test "некорректный переход не меняет состояние" do
-    assert {:error, :invalid_transition} == Tram.transition(:lol)
-    assert Tram.get_state().current == :idle
-  end
-
   test "пустой" do
     Tram.transition(:power_on)
     Tram.transition(:open_doors)
@@ -69,5 +64,10 @@ defmodule TramTest do
     Tram.transition(:close_doors)
     Tram.transition(:stop)
     assert Tram.get_state().current == :ready
+  end
+
+  test "не предусмотренный переход не меняет состояние" do
+    assert {:error, :invalid_transition} == Tram.transition(:lol)
+    assert Tram.get_state().current == :idle
   end
 end
