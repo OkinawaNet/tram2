@@ -65,6 +65,6 @@ Tram.transition(:stop)
 Tram.transition(:power_off)
 
 # Текущее состояние
-Tram.get_state
+Tram.get_state()
 # %Tram{current: :ready, data: %{passengers: 0}}                                
 
