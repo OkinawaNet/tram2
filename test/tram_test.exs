@@ -59,15 +59,16 @@ defmodule TramTest do
     assert Tram.get_state().current == :ready
   end
 
-  test "Не переходит в недопустимые состояния" do
+  test "несуществующий переход из ready не меняет состояние" do
     Tram.transition(:power_on)
     Tram.transition(:close_doors)
     Tram.transition(:stop)
     assert Tram.get_state().current == :ready
   end
 
-  test "не предусмотренный переход не меняет состояние" do
+  test "несуществующий переход не меняет состояние" do
+    Tram.transition(:power_on)
     assert {:error, :invalid_transition} == Tram.transition(:lol)
-    assert Tram.get_state().current == :idle
+    assert Tram.get_state().current == :ready
   end
 end
