@@ -41,7 +41,7 @@ defmodule TramTest do
     assert Tram.get_state().current == :final_state
   end
 
-  test "Забыл пассажиров. не может закончить работу" do
+  test "Забыл высадить пассажиров. не может закончить работу" do
     Tram.transition(:power_on)
     Tram.transition(:move)
     Tram.transition(:stop)
